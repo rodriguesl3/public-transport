@@ -31,5 +31,4 @@ notifications:
 
 script:
   - pwd
-  - docker build -f ./src/N2L.PublicTransport.API.Autocarros/Dockerfile -t autocarros:develop .
-  - docker build -f ./src/N2L.PublicTransport.API.Comboios/Dockerfile -t cp-comboios:develop .
+  - docker build -f ./src/N2L.PublicTransport.API/Dockerfile -t publictransport:develop .
