@@ -23,6 +23,16 @@ services:
 #  - docker push $DOCKER_USERNAME/publictransport:develop
   
   
+addons:
+  sonarcloud:
+    organization: "rodriguesl3-github"
+    token:
+      secure: $sonarCI # encrypted value of your token
+
+script:
+  # the following command line builds the project, runs the tests with coverage and then execute the SonarCloud analysis
+  - sonar-scanner
+
 notifications:
   email:
     on_success: never
