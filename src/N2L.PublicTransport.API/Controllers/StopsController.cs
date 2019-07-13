@@ -1,10 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Flurl;
+﻿using AutoMapper;
 using Flurl.Http;
+using Microsoft.AspNetCore.Mvc;
+using N2L.PublicTransport.CrossCutting.Extensions;
+using N2L.PublicTransport.Domain.Aggregation;
+using N2L.PublicTransport.Domain.Entities;
+using N2L.PublicTransport.Domain.ViewModel;
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace N2L.PublicTransport.API.Controllers
 {
@@ -12,12 +15,20 @@ namespace N2L.PublicTransport.API.Controllers
     [ApiController]
     public class StopsController : Controller
     {
+
+        private readonly IMapper _mapper;
+
+        public StopsController(IMapper mapper)
+        {
+            _mapper = mapper;
+        }
+
         [HttpGet]
         public async Task<IActionResult> Index(string latitude, string longitude, string data, string hora)
         {
             try
             {
-                var response = await Environment.GetEnvironmentVariable("LISBON_API")
+                var response = await Environment.GetEnvironmentVariable("LISBON_SEARCH_STOP")
                 .PostMultipartAsync(mp =>
                 mp.AddString("cmd", "pesquisarParagem")
                   .AddString("coordenadas", $"{latitude}/{longitude}")
@@ -32,21 +43,25 @@ namespace N2L.PublicTransport.API.Controllers
 
                 var result = await response.Content.ReadAsStringAsync();
                 var splitResult = result.Split(new[] { "#___#" }, StringSplitOptions.RemoveEmptyEntries);
-                var csvResult = splitResult[1];
+                var csvResult = splitResult[1].Split('*');
                 var htmlResult = splitResult[0];
 
-                var htmlToJson = await Environment.GetEnvironmentVariable("PARSE_HTML").PostMultipartAsync(mp =>
-                    mp
-                    .AddString("tool", "data-html-to-json-converter")
-                    .AddJson("parameters", new { indent = true, unescapeJson = true, mode = "Auto", attributePrefix = "@", textPropertyName = "#text", input = htmlResult }));
+                var htmlToJson = await htmlResult.ToJsonAutoMode();
 
-                var parseHtmlResult = Newtonsoft.Json.JsonConvert.DeserializeObject<RootObject>((await htmlToJson.Content.ReadAsStringAsync()).Replace("@", "").Replace("class", "classe").Replace("#text", "text"));
+                var parseHtmlResult = Newtonsoft.Json.JsonConvert.DeserializeObject<HtmlContent>((await htmlToJson.Content.ReadAsStringAsync()).Replace("@", "").Replace("class", "classe").Replace("#text", "text"));
 
                 var stopList = parseHtmlResult.div.div;
 
+                var nextBus = _mapper.Map<IEnumerable<NextBus>>(stopList);
+                var stopLocation = _mapper.Map<IEnumerable<StopLocation>>(csvResult);
 
+                var searchStopList = new SearchStop
+                {
+                    StopLocationList = stopLocation,
+                    NextBusList = nextBus
+                };
 
-                return Ok(stopList);
+                return Ok(searchStopList);
             }
             catch (Exception ex)
             {
@@ -54,43 +69,5 @@ namespace N2L.PublicTransport.API.Controllers
                 throw ex;
             }
         }
-    }
-
-    public class Img
-    {
-        public string alt { get; set; }
-        public string src { get; set; }
-    }
-
-    public class A
-    {
-        public string classe { get; set; }
-        public string href { get; set; }
-        public string text { get; set; }
-    }
-
-    public class Div3
-    {
-        public Img img { get; set; }
-        public object label { get; set; }
-        public object text { get; set; }
-        public A a { get; set; }
-    }
-
-    public class Div2
-    {
-        public string classe { get; set; }
-        public List<Div3> div { get; set; }
-    }
-
-    public class Div
-    {
-        public string classe { get; set; }
-        public List<Div2> div { get; set; }
-    }
-
-    public class RootObject
-    {
-        public Div div { get; set; }
     }
 }

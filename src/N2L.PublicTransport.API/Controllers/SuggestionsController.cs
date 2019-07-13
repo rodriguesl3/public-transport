@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using N2L.PublicTransport.Domain.Entities;
 
 namespace N2L.PublicTransport.API.Controllers
 {
@@ -32,20 +33,4 @@ namespace N2L.PublicTransport.API.Controllers
         }
     }
 
-
-
-    public class Suggestions
-    {
-        public string ImageUrl { get; set; }
-        public string Title { get; set; }
-        public string DescriptionPlace { get; set; }
-
-
-        public Suggestions(string imageUrl, string title, string descriptionPlace)
-        {
-            ImageUrl = imageUrl;
-            Title = title;
-            DescriptionPlace = descriptionPlace;
-        }
-    }
 }
