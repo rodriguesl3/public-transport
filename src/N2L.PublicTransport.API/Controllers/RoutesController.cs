@@ -26,7 +26,9 @@ namespace N2L.PublicTransport.API.Controllers
 
 
         [HttpGet]
-        public async Task<IActionResult> Index(string startLatitude, string startLongitude, string endLatitude, string endLongitude, string data, string hora, bool isArrivalTime)
+        public async Task<IActionResult> Index(string startLatitude, string startLongitude, 
+            string endLatitude, string endLongitude,
+            string data, string hora, bool isArrivalTime)
         {
             try
             {
