@@ -18,6 +18,7 @@ services:
 
 
 after_success:
+  - docker login -u oauth2accesstoken -p ${GCR_PASS} https://gcr.io
   - docker tag publictransport:develop gcr.io/lisbon-togo-1563862264011/publictransport:develop
   - docker push gcr.io/lisbon-togo-1563862264011/publictransport:develop
   
