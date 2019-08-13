@@ -28,15 +28,15 @@ namespace N2L.PublicTransport.API.Controllers
         {
             try
             {
-                var response = await Environment.GetEnvironmentVariable("LISBON_SEARCH_STOP")
+               var response = await Environment.GetEnvironmentVariable("LISBON_SEARCH_STOP")
                 .PostMultipartAsync(mp =>
                 mp.AddString("cmd", "pesquisarParagem")
                   .AddString("coordenadas", $"{latitude}/{longitude}")
                   .AddString("hora", $"{hora}")
                   .AddString("data", $"{data}")
                   .AddString("UrlBase", Environment.GetEnvironmentVariable("LISBON_DOMAIN"))
-                  .AddString("areaInfluencia", "100")
-                  .AddString("intervalo", "1800")
+                  .AddString("areaInfluencia", "500")
+                  .AddString("intervalo", "2700")
                   .AddString("textLocal", "Definido no mapa")
                   .AddString("codOperador", "")
                 );
@@ -45,10 +45,16 @@ namespace N2L.PublicTransport.API.Controllers
                 var splitResult = result.Split(new[] { "#___#" }, StringSplitOptions.RemoveEmptyEntries);
                 var csvResult = splitResult[1].Split('*');
                 var htmlResult = splitResult[0];
+                if(splitResult[0] == "Erro")
+                {
+                    return StatusCode((int)System.Net.HttpStatusCode.Gone, splitResult[2]);
+                }
+
 
                 var htmlToJson = await htmlResult.ToJsonAutoMode();
+                var responseHtmlParse = await htmlToJson.Content.ReadAsStringAsync();
 
-                var parseHtmlResult = Newtonsoft.Json.JsonConvert.DeserializeObject<HtmlContent>((await htmlToJson.Content.ReadAsStringAsync()).Replace("@", "").Replace("class", "classe").Replace("#text", "text"));
+                var parseHtmlResult = Newtonsoft.Json.JsonConvert.DeserializeObject<HtmlContent>(responseHtmlParse.Replace("@", "").Replace("class", "classe").Replace("#text", "text"));
 
                 var stopList = parseHtmlResult.div.div;
 
