@@ -35,8 +35,8 @@ namespace N2L.PublicTransport.API.Controllers
                   .AddString("hora", $"{hora}")
                   .AddString("data", $"{data}")
                   .AddString("UrlBase", Environment.GetEnvironmentVariable("LISBON_DOMAIN"))
-                  .AddString("areaInfluencia", "500")
-                  .AddString("intervalo", "2700")
+                  .AddString("areaInfluencia", "1000")
+                  .AddString("intervalo", "1800")
                   .AddString("textLocal", "Definido no mapa")
                   .AddString("codOperador", "")
                 );
@@ -47,25 +47,47 @@ namespace N2L.PublicTransport.API.Controllers
                 var htmlResult = splitResult[0];
                 if(splitResult[0] == "Erro")
                 {
-                    return StatusCode((int)System.Net.HttpStatusCode.Gone, splitResult[2]);
+                    return StatusCode((int)System.Net.HttpStatusCode.Gone, new { data = splitResult[2] });
                 }
 
 
                 var htmlToJson = await htmlResult.ToJsonAutoMode();
                 var responseHtmlParse = await htmlToJson.Content.ReadAsStringAsync();
 
-                var parseHtmlResult = Newtonsoft.Json.JsonConvert.DeserializeObject<HtmlContent>(responseHtmlParse.Replace("@", "").Replace("class", "classe").Replace("#text", "text"));
-
-                var stopList = parseHtmlResult.div.div;
-
-                var nextBus = _mapper.Map<IEnumerable<NextBus>>(stopList);
-                var stopLocation = _mapper.Map<IEnumerable<StopLocation>>(csvResult);
-
-                var searchStopList = new SearchStop
+                SearchStop searchStopList;
+                try
                 {
-                    StopLocationList = stopLocation,
-                    NextBusList = nextBus
-                };
+                    HtmlContent parseHtmlResult = Newtonsoft.Json.JsonConvert.DeserializeObject<HtmlContent>(responseHtmlParse.Replace("@", "").Replace("class", "classe").Replace("#text", "text"));
+                    var stopList = parseHtmlResult.div.div;
+                    var nextBus = _mapper.Map<IEnumerable<NextBus>>(stopList);
+                    var stopLocation = _mapper.Map<IEnumerable<StopLocation>>(csvResult);
+
+                     searchStopList = new SearchStop
+                    {
+                        StopLocationList = stopLocation,
+                        NextBusList = nextBus
+                    };
+                }
+                catch (Exception)
+                {
+                    HtmlContentUnique parseHtmlResult = Newtonsoft.Json.JsonConvert.DeserializeObject<HtmlContentUnique>(responseHtmlParse.Replace("@", "").Replace("class", "classe").Replace("#text", "text"));
+
+
+                    var stopList = parseHtmlResult.div.div;
+                    var nextBus = _mapper.Map<NextBus>(stopList);
+                    var stopLocation = _mapper.Map<StopLocation>(csvResult[0]);
+
+                     searchStopList = new SearchStop
+                    {
+                        StopLocationList = new List<StopLocation> { stopLocation },
+                        NextBusList = new List<NextBus> { nextBus },
+                    };
+
+                }
+
+                
+
+               
 
                 return Ok(searchStopList);
             }

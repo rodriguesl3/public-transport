@@ -5,8 +5,19 @@ using System.Threading.Tasks;
 
 namespace N2L.PublicTransport.Domain.ViewModel
 {
-    public class HtmlContent
+
+    public interface IHtmlParse
+    {
+
+    }
+
+    public class HtmlContent:IHtmlParse
     {
         public Content div { get; set; }
+    }
+
+    public class HtmlContentUnique:IHtmlParse
+    {
+        public ContentUnique div { get; set; }
     }
 }
