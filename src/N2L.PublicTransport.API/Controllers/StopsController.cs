@@ -36,7 +36,7 @@ namespace N2L.PublicTransport.API.Controllers
                   .AddString("data", $"{data}")
                   .AddString("UrlBase", Environment.GetEnvironmentVariable("LISBON_DOMAIN"))
                   .AddString("areaInfluencia", "1000")
-                  .AddString("intervalo", "1800")
+                  .AddString("intervalo", "1000")
                   .AddString("textLocal", "Definido no mapa")
                   .AddString("codOperador", "")
                 );
@@ -68,7 +68,7 @@ namespace N2L.PublicTransport.API.Controllers
                         NextBusList = nextBus
                     };
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
                     HtmlContentUnique parseHtmlResult = Newtonsoft.Json.JsonConvert.DeserializeObject<HtmlContentUnique>(responseHtmlParse.Replace("@", "").Replace("class", "classe").Replace("#text", "text"));
 

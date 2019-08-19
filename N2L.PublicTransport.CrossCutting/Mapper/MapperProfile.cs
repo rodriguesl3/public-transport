@@ -18,7 +18,7 @@ namespace N2L.PublicTransport.CrossCutting.Mapper
                                                  .MapFrom(src => $"{((Newtonsoft.Json.Linq.JContainer)src.div[1].label)[1].ToString()} {((Newtonsoft.Json.Linq.JContainer)src.div[1].text)[1].ToString()}"))
                 .ForPath(dest => dest.Code, opt => opt.MapFrom(src => $"{src.div[2].label} {src.div[2].text}"))
                 .ForPath(dest => dest.Address, opt => opt.MapFrom(src => src.div[3].a.text))
-                .ForPath(dest => dest.Line, opt => opt.MapFrom(src => src.div[4].a.text));
+                .ForPath(dest => dest.Line, opt => opt.MapFrom(src => src.div.Count > 4 ? src.div[4].a.text : String.Empty));
 
 
             CreateMap<string, StopLocation>()
@@ -48,7 +48,15 @@ namespace N2L.PublicTransport.CrossCutting.Mapper
 
         private string GetValueByIndexPosition(string src, int index)
         {
-            return src.Split('/')[index];
+            try
+            {
+                return src.Split('/')[index];
+            }
+            catch (Exception)
+            {
+                return "";
+            }
+
         }
     }
 }
