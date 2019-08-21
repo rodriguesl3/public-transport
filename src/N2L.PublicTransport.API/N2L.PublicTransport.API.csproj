@@ -22,4 +22,14 @@
     <ProjectReference Include="..\..\N2L.PublicTransport.Domain\N2L.PublicTransport.Domain.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Content Update="linesAvailable.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="json\" />
+  </ItemGroup>
+
 </Project>
