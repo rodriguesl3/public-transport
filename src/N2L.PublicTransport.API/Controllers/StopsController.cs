@@ -35,7 +35,7 @@ namespace N2L.PublicTransport.API.Controllers
                   .AddString("hora", $"{hora}")
                   .AddString("data", $"{data}")
                   .AddString("UrlBase", Environment.GetEnvironmentVariable("LISBON_DOMAIN"))
-                  .AddString("areaInfluencia", "1000")
+                  .AddString("areaInfluencia", "500")
                   .AddString("intervalo", "1000")
                   .AddString("textLocal", "Definido no mapa")
                   .AddString("codOperador", "")
