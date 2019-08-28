@@ -118,8 +118,8 @@ namespace N2L.PublicTransport.API.Controllers
             {
                 StopCode = coordinates[4].Split('|')[0],
                 StopName = coordinates[4].Split('|')[1],
-                StopLatitude = coordinates[4].Split('|')[2],
-                StopLongitude = coordinates[4].Split('|')[3]
+                StopLatitude = coordinates[4].Split('|')[3],
+                StopLongitude = coordinates[4].Split('|')[2]
             });
 
             return Ok(resultMap);
