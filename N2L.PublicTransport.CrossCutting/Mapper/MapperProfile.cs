@@ -17,8 +17,8 @@ namespace N2L.PublicTransport.CrossCutting.Mapper
 
                 .ForPath(dest => dest.StopCode, opt => opt.MapFrom(src => src.Split('|', StringSplitOptions.RemoveEmptyEntries)[0]))
                 .ForPath(dest => dest.StopName, opt => opt.MapFrom(src => src.Split('|', StringSplitOptions.RemoveEmptyEntries)[1]))
-                .ForPath(dest => dest.StopLatitude, opt => opt.MapFrom(src => src.Split('|', StringSplitOptions.RemoveEmptyEntries)[2]))
-                .ForPath(dest => dest.StopLongitude, opt => opt.MapFrom(src => src.Split('|', StringSplitOptions.RemoveEmptyEntries)[3]))
+                .ForPath(dest => dest.StopLatitude, opt => opt.MapFrom(src => src.Split('|', StringSplitOptions.RemoveEmptyEntries)[3]))
+                .ForPath(dest => dest.StopLongitude, opt => opt.MapFrom(src => src.Split('|', StringSplitOptions.RemoveEmptyEntries)[2]))
                 .ForPath(dest => dest.RoutGeolocationList, opt => opt.MapFrom(src => src.Split('|', StringSplitOptions.RemoveEmptyEntries)[4]
                 .Split('$', StringSplitOptions.RemoveEmptyEntries)
                                             .Where(x => x.Contains("-9"))
