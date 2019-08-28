@@ -114,6 +114,7 @@ namespace N2L.PublicTransport.API.Controllers
 
             var resultMap = _mapper.Map<List<LineRoute>>(coordinates);
 
+
             resultMap.Add(new LineRoute
             {
                 StopCode = coordinates[4].Split('|')[0],
