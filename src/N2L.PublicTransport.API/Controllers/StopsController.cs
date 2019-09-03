@@ -117,11 +117,11 @@ namespace N2L.PublicTransport.API.Controllers
 
                 }
 
-               var orderResult = searchStopList.StopLocationList.OrderBy(x => GetDistanceBetweenPoints(Convert.ToDouble(x.Latitude), Convert.ToDouble(x.Longitude), Convert.ToDouble(latitude), Convert.ToDouble(longitude)));
+                searchStopList.StopLocationList = searchStopList.StopLocationList.OrderBy(x => GetDistanceBetweenPoints(Convert.ToDouble(x.Latitude), Convert.ToDouble(x.Longitude), Convert.ToDouble(latitude), Convert.ToDouble(longitude)));
 
                
 
-                return Ok(orderResult);
+                return Ok(searchStopList);
             }
             catch (Exception ex)
             {
