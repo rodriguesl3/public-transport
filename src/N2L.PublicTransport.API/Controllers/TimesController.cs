@@ -51,7 +51,7 @@ namespace N2L.PublicTransport.API.Controllers
 
             var lines = FileReader.ReadJsonFile(pathToFile);
             var values = _mapper.Map<IEnumerable<ValueInformation>>(lines).Where(expression);
-                
+
             return Ok(new { data = values });
         }
 
@@ -122,6 +122,13 @@ namespace N2L.PublicTransport.API.Controllers
                 StopLatitude = coordinates[4].Split('|')[3],
                 StopLongitude = coordinates[4].Split('|')[2]
             });
+
+
+            var hours = splitResponse[1].Split(new[] { "<TR>" }, StringSplitOptions.RemoveEmptyEntries);
+
+
+            for (int i = 1; i < hours.Where(x => x.Contains("<p>")).Count(); i++)
+                resultMap[i - 1].Time = hours[i].Split(new[] { "<p>" }, StringSplitOptions.RemoveEmptyEntries)[2].Substring(0, 5);
 
             return Ok(resultMap);
         }
