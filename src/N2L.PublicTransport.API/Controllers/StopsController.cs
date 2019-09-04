@@ -60,24 +60,24 @@ namespace N2L.PublicTransport.API.Controllers
         {
             try
             {
-               var response = await Environment.GetEnvironmentVariable("LISBON_SEARCH_STOP")
-                .PostMultipartAsync(mp =>
-                mp.AddString("cmd", "pesquisarParagem")
-                  .AddString("coordenadas", $"{latitude}/{longitude}")
-                  .AddString("hora", $"{hora}")
-                  .AddString("data", $"{data}")
-                  .AddString("UrlBase", Environment.GetEnvironmentVariable("LISBON_DOMAIN"))
-                  .AddString("areaInfluencia", "500")
-                  .AddString("intervalo", "1000")
-                  .AddString("textLocal", "Definido no mapa")
-                  .AddString("codOperador", "")
-                );
+                var response = await Environment.GetEnvironmentVariable("LISBON_SEARCH_STOP")
+                 .PostMultipartAsync(mp =>
+                 mp.AddString("cmd", "pesquisarParagem")
+                   .AddString("coordenadas", $"{latitude}/{longitude}")
+                   .AddString("hora", $"{hora}")
+                   .AddString("data", $"{data}")
+                   .AddString("UrlBase", Environment.GetEnvironmentVariable("LISBON_DOMAIN"))
+                   .AddString("areaInfluencia", "500")
+                   .AddString("intervalo", "1000")
+                   .AddString("textLocal", "Definido no mapa")
+                   .AddString("codOperador", "")
+                 );
 
                 var result = await response.Content.ReadAsStringAsync();
                 var splitResult = result.Split(new[] { "#___#" }, StringSplitOptions.RemoveEmptyEntries);
                 var csvResult = splitResult[1].Split('*');
                 var htmlResult = splitResult[0];
-                if(splitResult[0] == "Erro")
+                if (splitResult[0] == "Erro")
                 {
                     return StatusCode((int)System.Net.HttpStatusCode.Gone, new { data = splitResult[2] });
                 }
@@ -86,19 +86,16 @@ namespace N2L.PublicTransport.API.Controllers
                 var htmlToJson = await htmlResult.ToJsonAutoMode();
                 var responseHtmlParse = await htmlToJson.Content.ReadAsStringAsync();
 
-                SearchStop searchStopList;
+                SearchStop searchStopList = new SearchStop();
+                IEnumerable<StopLocation> stopLocationList;
+                IEnumerable<NextBus> nextBusList;
+
                 try
                 {
                     HtmlContent parseHtmlResult = Newtonsoft.Json.JsonConvert.DeserializeObject<HtmlContent>(responseHtmlParse.Replace("@", "").Replace("class", "classe").Replace("#text", "text"));
                     var stopList = parseHtmlResult.div.div;
-                    var nextBus = _mapper.Map<IEnumerable<NextBus>>(stopList);
-                    var stopLocation = _mapper.Map<IEnumerable<StopLocation>>(csvResult);
-
-                     searchStopList = new SearchStop
-                    {
-                        StopLocationList = stopLocation,
-                        NextBusList = nextBus
-                    };
+                    nextBusList = _mapper.Map<IEnumerable<NextBus>>(stopList);
+                    stopLocationList = _mapper.Map<IEnumerable<StopLocation>>(csvResult);
                 }
                 catch (Exception ex)
                 {
@@ -108,20 +105,23 @@ namespace N2L.PublicTransport.API.Controllers
                     var stopList = parseHtmlResult.div.div;
                     var nextBus = _mapper.Map<NextBus>(stopList);
                     var stopLocation = _mapper.Map<StopLocation>(csvResult[0]);
-
-                     searchStopList = new SearchStop
-                    {
-                        StopLocationList = new List<StopLocation> { stopLocation },
-                        NextBusList = new List<NextBus> { nextBus },
-                    };
-
+                    stopLocationList = new List<StopLocation> { stopLocation };
+                    nextBusList = new List<NextBus> { nextBus };
                 }
 
-                searchStopList.StopLocationList = searchStopList.StopLocationList.OrderBy(x => GetDistanceBetweenPoints(Convert.ToDouble(x.Latitude), Convert.ToDouble(x.Longitude), Convert.ToDouble(latitude), Convert.ToDouble(longitude)));
 
-               
+                List<StopLocation> resultList = new List<StopLocation>();
 
-                return Ok(searchStopList);
+                foreach (var stop in stopLocationList)
+                {
+                    stop.NextBuses = nextBusList.Where(x => x.Code.Contains(stop.StopCode));
+
+                    resultList.Add(stop);
+                }
+
+                resultList = resultList.OrderBy(x => GetDistanceBetweenPoints(Convert.ToDouble(x.Latitude), Convert.ToDouble(x.Longitude), Convert.ToDouble(latitude), Convert.ToDouble(longitude))).ToList();
+
+                return Ok(resultList);
             }
             catch (Exception ex)
             {

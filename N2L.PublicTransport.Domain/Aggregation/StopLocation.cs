@@ -10,5 +10,6 @@ namespace N2L.PublicTransport.Domain.Aggregation
         public string Longitude { get; set; }
         public string Address { get; set; }
         public string StopCode { get; set; }
+        public IEnumerable<NextBus> NextBuses { get; set; }
     }
 }
