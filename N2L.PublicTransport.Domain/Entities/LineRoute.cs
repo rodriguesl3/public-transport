@@ -10,6 +10,7 @@ namespace N2L.PublicTransport.Domain.Entities
         public string StopName { get; set; }
         public string StopLatitude { get; set; }
         public string StopLongitude { get; set; }
+        public string Time { get; set; }
         public IEnumerable<RouteGeolocation> RoutGeolocationList { get; set; }
     }
 
