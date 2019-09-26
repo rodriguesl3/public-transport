@@ -17,12 +17,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\N2L.PublicTransport.Application.cs\N2L.PublicTransport.Application.csproj" />
-    <ProjectReference Include="..\..\N2L.PublicTransport.CrossCutting\N2L.PublicTransport.CrossCutting.csproj" />
-    <ProjectReference Include="..\..\N2L.PublicTransport.Domain\N2L.PublicTransport.Domain.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
     <Content Update="linesAvailable.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -30,6 +24,11 @@
 
   <ItemGroup>
     <Folder Include="json\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\N2L.PublicTransport.CrossCutting\N2L.PublicTransport.CrossCutting.csproj" />
+    <ProjectReference Include="..\N2L.PublicTransport.Domain\N2L.PublicTransport.Domain.csproj" />
   </ItemGroup>
 
 </Project>
