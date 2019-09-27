@@ -24,8 +24,6 @@ namespace N2L.PublicTransport.API.Controllers
             _mapper = mapper;
         }
 
-
-
         private double GetDistanceBetweenPoints(double lat1, double long1, double lat2, double long2)
         {
             double distance = 0;
@@ -53,7 +51,6 @@ namespace N2L.PublicTransport.API.Controllers
             distance = radius * c;
             return distance;
         }
-
 
         [HttpGet]
         public async Task<IActionResult> Index(string latitude, string longitude, string data, string hora)
