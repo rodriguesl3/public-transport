@@ -27,6 +27,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\N2L.PublicTransport.Infrastructure\N2L.PublicTransport.Infrastructure.csproj" />
+    <ProjectReference Include="..\N2L.PublicTransport.Application.cs\N2L.PublicTransport.Application.csproj" />
     <ProjectReference Include="..\N2L.PublicTransport.CrossCutting\N2L.PublicTransport.CrossCutting.csproj" />
     <ProjectReference Include="..\N2L.PublicTransport.Domain\N2L.PublicTransport.Domain.csproj" />
   </ItemGroup>

@@ -4,7 +4,11 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using N2L.PublicTransport.Application.Interfaces;
+using N2L.PublicTransport.Application.Requests;
 using N2L.PublicTransport.CrossCutting.Mapper;
+using N2L.PublicTransport.Infrastructure.Infra;
+using N2L.PublicTransport.Infrastructure.Interfaces;
 
 namespace N2L.PublicTransport.API
 {
@@ -28,6 +32,8 @@ namespace N2L.PublicTransport.API
             IMapper mapper = mappingConfig.CreateMapper();
 
             services.AddSingleton(mapper);
+            services.AddTransient<INextBusApp, NextBusApp>();
+            services.AddTransient<INextBusInfra, NextBusInfra>();
 
 
             services.AddCors(options =>

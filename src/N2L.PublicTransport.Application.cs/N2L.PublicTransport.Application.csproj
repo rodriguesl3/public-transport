@@ -5,12 +5,15 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="9.0.0" />
     <PackageReference Include="Flurl" Version="2.8.2" />
     <PackageReference Include="Flurl.Http" Version="2.4.2" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Requests\" />
+    <ProjectReference Include="..\..\N2L.PublicTransport.Infrastructure\N2L.PublicTransport.Infrastructure.csproj" />
+    <ProjectReference Include="..\N2L.PublicTransport.CrossCutting\N2L.PublicTransport.CrossCutting.csproj" />
+    <ProjectReference Include="..\N2L.PublicTransport.Domain\N2L.PublicTransport.Domain.csproj" />
   </ItemGroup>
 
 </Project>
