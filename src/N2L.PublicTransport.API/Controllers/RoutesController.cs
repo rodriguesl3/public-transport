@@ -36,7 +36,7 @@ namespace N2L.PublicTransport.API.Controllers
         {
             try
             {
-                var routeOptions = _nextBusApp.GetRoutes(startLatitude, startLongitude, endLatitude, endLongitude, data, hora, isArrivalTime);
+                var routeOptions = await _nextBusApp.GetRoutes(startLatitude, startLongitude, endLatitude, endLongitude, data, hora, isArrivalTime);
                 return Ok(routeOptions);
             }
             catch (FlurlHttpException ex)
@@ -54,7 +54,7 @@ namespace N2L.PublicTransport.API.Controllers
         [Route("next")]
         public async Task<IActionResult> GetNextBus(string startLatitude, string startLongitude, string[] destinations)
         {
-            var travelInformationList = _nextBusApp.GetTravelInformation(startLatitude, startLongitude, destinations);
+            var travelInformationList = await _nextBusApp.GetTravelInformation(startLatitude, startLongitude, destinations);
             return Ok(new { data = travelInformationList });
         }
     }
