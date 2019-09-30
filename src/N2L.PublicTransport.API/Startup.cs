@@ -34,6 +34,8 @@ namespace N2L.PublicTransport.API
             services.AddSingleton(mapper);
             services.AddTransient<INextBusApp, NextBusApp>();
             services.AddTransient<INextBusInfra, NextBusInfra>();
+            services.AddTransient<IStopsApp, StopApp>();
+            services.AddTransient<IStopInfra, StopsInfra>();
 
 
             services.AddCors(options =>
