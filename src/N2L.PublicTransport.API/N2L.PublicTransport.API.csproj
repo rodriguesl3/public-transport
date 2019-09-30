@@ -7,7 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="AutoMapper" Version="8.1.1" />
+    <PackageReference Include="AutoMapper" Version="9.0.0" />
     <PackageReference Include="Flurl" Version="2.8.2" />
     <PackageReference Include="Flurl.Http" Version="2.4.2" />
     <PackageReference Include="Microsoft.AspNetCore.App" />
@@ -17,9 +17,20 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\N2L.PublicTransport.Application.cs\N2L.PublicTransport.Application.csproj" />
-    <ProjectReference Include="..\..\N2L.PublicTransport.CrossCutting\N2L.PublicTransport.CrossCutting.csproj" />
-    <ProjectReference Include="..\..\N2L.PublicTransport.Domain\N2L.PublicTransport.Domain.csproj" />
+    <Content Update="linesAvailable.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="json\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\N2L.PublicTransport.Infrastructure\N2L.PublicTransport.Infrastructure.csproj" />
+    <ProjectReference Include="..\N2L.PublicTransport.Application.cs\N2L.PublicTransport.Application.csproj" />
+    <ProjectReference Include="..\N2L.PublicTransport.CrossCutting\N2L.PublicTransport.CrossCutting.csproj" />
+    <ProjectReference Include="..\N2L.PublicTransport.Domain\N2L.PublicTransport.Domain.csproj" />
   </ItemGroup>
 
 </Project>

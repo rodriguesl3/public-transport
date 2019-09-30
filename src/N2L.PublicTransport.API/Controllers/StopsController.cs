@@ -6,8 +6,10 @@ using N2L.PublicTransport.Domain.Aggregation;
 using N2L.PublicTransport.Domain.Entities;
 using N2L.PublicTransport.Domain.ViewModel;
 using System;
+using System.Linq;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using N2L.PublicTransport.Application.Interfaces;
 
 namespace N2L.PublicTransport.API.Controllers
 {
@@ -17,10 +19,11 @@ namespace N2L.PublicTransport.API.Controllers
     {
 
         private readonly IMapper _mapper;
+        private readonly IStopsApp _stopsApp;
 
-        public StopsController(IMapper mapper)
+        public StopsController(IStopsApp stopsApp)
         {
-            _mapper = mapper;
+            _stopsApp = stopsApp;
         }
 
         [HttpGet]
@@ -28,44 +31,12 @@ namespace N2L.PublicTransport.API.Controllers
         {
             try
             {
-                var response = await Environment.GetEnvironmentVariable("LISBON_SEARCH_STOP")
-                .PostMultipartAsync(mp =>
-                mp.AddString("cmd", "pesquisarParagem")
-                  .AddString("coordenadas", $"{latitude}/{longitude}")
-                  .AddString("hora", $"{hora}")
-                  .AddString("data", $"{data}")
-                  .AddString("UrlBase", Environment.GetEnvironmentVariable("LISBON_DOMAIN"))
-                  .AddString("areaInfluencia", "100")
-                  .AddString("intervalo", "1800")
-                  .AddString("textLocal", "Definido no mapa")
-                  .AddString("codOperador", "")
-                );
+                var result = await _stopsApp.GetStopsLocations(latitude, longitude, data, hora);
 
-                var result = await response.Content.ReadAsStringAsync();
-                var splitResult = result.Split(new[] { "#___#" }, StringSplitOptions.RemoveEmptyEntries);
-                var csvResult = splitResult[1].Split('*');
-                var htmlResult = splitResult[0];
-
-                var htmlToJson = await htmlResult.ToJsonAutoMode();
-
-                var parseHtmlResult = Newtonsoft.Json.JsonConvert.DeserializeObject<HtmlContent>((await htmlToJson.Content.ReadAsStringAsync()).Replace("@", "").Replace("class", "classe").Replace("#text", "text"));
-
-                var stopList = parseHtmlResult.div.div;
-
-                var nextBus = _mapper.Map<IEnumerable<NextBus>>(stopList);
-                var stopLocation = _mapper.Map<IEnumerable<StopLocation>>(csvResult);
-
-                var searchStopList = new SearchStop
-                {
-                    StopLocationList = stopLocation,
-                    NextBusList = nextBus
-                };
-
-                return Ok(searchStopList);
+                return Ok(result);
             }
             catch (Exception ex)
             {
-
                 throw ex;
             }
         }
