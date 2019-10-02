@@ -49,7 +49,6 @@ namespace N2L.PublicTransport.API.Controllers
             }
         }
 
-
         [HttpGet]
         [Route("next")]
         public async Task<IActionResult> GetNextBus(string startLatitude, string startLongitude, string[] destinations)
