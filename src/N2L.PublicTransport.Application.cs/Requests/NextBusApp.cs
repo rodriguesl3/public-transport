@@ -39,17 +39,17 @@ namespace N2L.PublicTransport.Application.Requests
 
         public async Task<List<TravelInformation>> GetTravelInformation(string startLatitude, string startLongitude, string[] destinations)
         {
-
             var responseList = _nextBusInfra.GetNextBus(startLatitude, startLongitude, destinations);
-
             var travelInfomrationList = new List<TravelInformation>();
 
-            foreach (var http in responseList)
+            for (int i = 0; i < responseList.Count; i++)
             {
-                var result = await ExtractContent(http, false);
+                var result = await ExtractContent(responseList[i], false);
+                var travelInfo = result.FirstOrDefault().TravelInformation;
+                travelInfo.ToLocation = destinations[i];
+                travelInfo.FromLocation = $"{startLatitude},{startLongitude}";
                 travelInfomrationList.Add(result.FirstOrDefault().TravelInformation);
             }
-
             return travelInfomrationList;
         }
 
@@ -79,11 +79,7 @@ namespace N2L.PublicTransport.Application.Requests
 
                 travelInformation = _mapper.Map<TravelInformation>(contentResult);
                 if (coordinates)
-                {
                     ExtractCoordinates(travelInformation, coordinatesSections, sectionInfo);
-
-
-                }
 
                 routeOption.TravelInformation = travelInformation;
                 routeOptions.Add(routeOption);
