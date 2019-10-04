@@ -10,7 +10,7 @@ namespace N2L.PublicTransport.Infrastructure.Infra
 {
     public class NextBusInfra : INextBusInfra
     {
-        public List<HttpResponseMessage> GetNextBus(string startLatitude, string startLongitude, string[] destinations)
+        public List<HttpResponseMessage> GetNextBus(string startLatitude, string startLongitude, string[] destinations, string dateTime)
         {
             var taskList = new List<Task>();
             var httpResponseList = new List<HttpResponseMessage>();
@@ -32,8 +32,8 @@ namespace N2L.PublicTransport.Infrastructure.Infra
                     .AddString("latFinal", endLatitude)
                     .AddString("longFinal", endLongitude)
 
-                    .AddString("dataRota", DateTime.Now.ToString("dd/MM/yyyy"))
-                    .AddString("horaRota", DateTime.Now.ToString("hh:mm"))
+                    .AddString("dataRota", dateTime.Split(' ')[0])
+                    .AddString("horaRota", dateTime.Split(' ')[1])
                     .AddString("calculoPartida", "0")
                     .AddString("calculoPreferencial", "false")
                     .AddString("nAlt", "1")

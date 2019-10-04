@@ -37,9 +37,9 @@ namespace N2L.PublicTransport.Application.Requests
 
         }
 
-        public async Task<List<TravelInformation>> GetTravelInformation(string startLatitude, string startLongitude, string[] destinations)
+        public async Task<List<TravelInformation>> GetTravelInformation(string startLatitude, string startLongitude, string[] destinations, string dateTime)
         {
-            var responseList = _nextBusInfra.GetNextBus(startLatitude, startLongitude, destinations);
+            var responseList = _nextBusInfra.GetNextBus(startLatitude, startLongitude, destinations, dateTime);
             var travelInfomrationList = new List<TravelInformation>();
 
             for (int i = 0; i < responseList.Count; i++)

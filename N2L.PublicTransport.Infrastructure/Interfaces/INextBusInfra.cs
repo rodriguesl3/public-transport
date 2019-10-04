@@ -8,7 +8,7 @@ namespace N2L.PublicTransport.Infrastructure.Interfaces
 {
     public interface INextBusInfra
     {
-        List<HttpResponseMessage> GetNextBus(string startLatitude, string startLongitude, string[] destinations);
+        List<HttpResponseMessage> GetNextBus(string startLatitude, string startLongitude, string[] destinations, string dateTime);
         Task<HttpResponseMessage> GetRoutes(string startLatitude, string startLongitude, string endLatitude, string endLongitude, string data, string hora, bool isArrivalTime);
     }
 }

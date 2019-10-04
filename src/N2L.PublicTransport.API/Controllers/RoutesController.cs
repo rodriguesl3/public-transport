@@ -51,9 +51,9 @@ namespace N2L.PublicTransport.API.Controllers
 
         [HttpGet]
         [Route("next")]
-        public async Task<IActionResult> GetNextBus(string startLatitude, string startLongitude, string[] destinations)
+        public async Task<IActionResult> GetNextBus(string startLatitude, string startLongitude, string[] destinations, string dateTime)
         {
-            var travelInformationList = await _nextBusApp.GetTravelInformation(startLatitude, startLongitude, destinations);
+            var travelInformationList = await _nextBusApp.GetTravelInformation(startLatitude, startLongitude, destinations, dateTime);
             return Ok(new { data = travelInformationList });
         }
     }

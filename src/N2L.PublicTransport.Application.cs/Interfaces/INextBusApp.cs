@@ -9,7 +9,7 @@ namespace N2L.PublicTransport.Application.Interfaces
 {
     public interface INextBusApp
     {
-        Task<List<TravelInformation>> GetTravelInformation(string startLatitude, string startLongitude, string[] destinations);
+        Task<List<TravelInformation>> GetTravelInformation(string startLatitude, string startLongitude, string[] destinations, string dateTime);
         Task<List<Route>> GetRoutes(string startLatitude, string startLongitude, string endLatitude, string endLongitude, string data, string hora, bool isArrivalTime);
     }
 }
